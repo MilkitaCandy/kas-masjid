@@ -465,6 +465,9 @@ body.is-admin th.col-aksi, body.is-admin td.col-aksi { display: table-cell; }
     /* MOBILE TABLE TO CARDS */
     .table-container { border: none; overflow-x: hidden; }
     table thead { display: none; }
+    
+    /* FIX 1: Hapus paksaan lebar 600px agar layar HP tidak bocor ke kanan */
+    .modern-table { min-width: 0 !important; }
     table, tbody, tr, td { display: block; width: 100%; }
     
     .modern-table tr {
@@ -494,5 +497,13 @@ body.is-admin th.col-aksi, body.is-admin td.col-aksi { display: table-cell; }
         text-transform: uppercase;
     }
     
-    body.is-admin td.col-aksi { display: flex; justify-content: flex-end; padding-top: 16px; }
+    /* FIX 2: Sembunyikan tombol Aksi secara mutlak di HP jika Viewer */
+    .modern-table td.col-aksi { display: none !important; }
+    
+    /* Munculkan kembali tombol Aksi hanya jika Admin Mode aktif */
+    body.is-admin .modern-table td.col-aksi { 
+        display: flex !important; 
+        justify-content: flex-end; 
+        padding-top: 16px; 
+    }
 }
