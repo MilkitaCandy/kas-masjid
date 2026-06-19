@@ -1,5 +1,4 @@
 [build]
-  base = "rekap-kas-muda-mudi-main"
   publish = "."
   functions = "netlify/functions"
 
