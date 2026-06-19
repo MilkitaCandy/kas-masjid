@@ -1,0 +1,12 @@
+{
+  "name": "rekap-kas-muda-mudi-main",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "echo \"Use Netlify or open index.html directly\""
+  },
+  "dependencies": {
+    "mongodb": "^5.9.0"
+  }
+}

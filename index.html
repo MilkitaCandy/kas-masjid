@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kas Masjid Bancak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="top-navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon"><i class="fa-solid fa-mosque"></i></div>
+                <div class="brand-text">
+                    <h1>Kas Bancak</h1>
+                    <span>Sistem Rekap Digital</span>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <div class="admin-status">Mode: <strong id="admin-mode-label">Viewer</strong></div>
+                <button type="button" class="btn-admin" id="admin-login-button"><i class="fa-solid fa-user-lock"></i> Masuk Admin</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="notification" class="notification"></div>
+
+        <div class="page-header">
+            <p class="text-muted" id="last-update"><i class="fa-solid fa-clock-rotate-left"></i> Update terakhir: memuat...</p>
+            
+            <div class="segment-control">
+                <button type="button" class="segment-btn active" id="show-kas-button">Rekap Utama</button>
+                <button type="button" class="segment-btn" id="show-pengeluaran-button">Pengeluaran</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon bg-success"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <div class="stat-details">
+                    <h3>Pemasukan</h3>
+                    <p id="total-pemasukan">Rp0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon bg-danger"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                <div class="stat-details">
+                    <h3>Pengeluaran</h3>
+                    <p id="total-pengeluaran">Rp0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon bg-primary"><i class="fa-solid fa-vault"></i></div>
+                <div class="stat-details">
+                    <h3>Sisa Kas</h3>
+                    <p id="sisa-kas" class="text-primary">Rp0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content" id="kas-content">
+            <div class="content-panel form-section fade-in">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-pen-to-square"></i> Form Kas Utama</h2>
+                </div>
+                <form id="kas-form" class="modern-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="tahun">Tahun</label>
+                            <select id="tahun" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bulan">Bulan</label>
+                            <select id="bulan" required>
+                                <option value="Januari">Januari</option>
+                                <option value="Februari">Februari</option>
+                                <option value="Maret">Maret</option>
+                                <option value="April">April</option>
+                                <option value="Mei">Mei</option>
+                                <option value="Juni">Juni</option>
+                                <option value="Juli">Juli</option>
+                                <option value="Agustus">Agustus</option>
+                                <option value="September">September</option>
+                                <option value="Oktober">Oktober</option>
+                                <option value="November">November</option>
+                                <option value="Desember">Desember</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pemasukan">Pemasukan Bulanan</label>
+                        <div class="input-prefix">
+                            <span>Rp</span>
+                            <input type="number" id="pemasukan" min="0" step="1" placeholder="0" required>
+                        </div>
+                    </div>
+                    <div class="info-alert">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Pengeluaran diisi di tab <strong>Pengeluaran</strong>, sisa kas akan otomatis dihitung.</span>
+                    </div>
+                    <button type="submit" class="btn-primary w-full" id="submit-button">Simpan Data Kas</button>
+                </form>
+            </div>
+
+            <div class="content-panel table-section fade-in delay-1">
+                <div class="panel-header with-action">
+                    <h2><i class="fa-solid fa-table"></i> Laporan Tahunan</h2>
+                    <button type="button" class="btn-danger-outline" id="reset-button"><i class="fa-solid fa-trash"></i> Reset</button>
+                </div>
+                <div class="table-container custom-scrollbar">
+                    <table id="kas-table" class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Periode</th>
+                                <th>Pemasukan</th>
+                                <th>Pengeluaran</th>
+                                <th>Sisa Kas</th>
+                                <th class="col-aksi">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content" id="pengeluaran-content" style="display:none;">
+            <div class="content-panel form-section fade-in" id="expense-form-section">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-receipt"></i> Form Pengeluaran</h2>
+                </div>
+                <form id="expense-form" class="modern-form">
+                    <div class="form-group">
+                        <label for="expense-date">Tanggal Transaksi</label>
+                        <input type="date" id="expense-date" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="expense-tahun">Tahun Alokasi</label>
+                            <select id="expense-tahun" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-bulan">Bulan Alokasi</label>
+                            <select id="expense-bulan" required></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-name">Nama Kegiatan</label>
+                        <input type="text" id="expense-name" placeholder="Cth: Konsumsi Rapat" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-note">Detail / Keterangan</label>
+                        <textarea id="expense-note" placeholder="Cth: Rapat persiapan pengajian akbar" rows="2" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-amount">Nominal</label>
+                        <div class="input-prefix">
+                            <span>Rp</span>
+                            <input type="number" id="expense-amount" min="0" step="1" placeholder="0" required>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn-primary flex-1" id="expense-submit-button">Tambah</button>
+                        <button type="button" class="btn-secondary" id="expense-reset-button">Batal</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="content-panel table-section fade-in delay-1">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-list"></i> Riwayat Pengeluaran</h2>
+                </div>
+                
+                <div class="filter-box">
+                    <div class="form-group">
+                        <label>Cari</label>
+                        <input type="text" id="expense-search" placeholder="Ketik kata kunci...">
+                    </div>
+                    <div class="form-group">
+                        <label>Tahun</label>
+                        <select id="expense-filter-tahun"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bulan</label>
+                        <select id="expense-filter-bulan"></select>
+                    </div>
+                </div>
+                
+                <div class="mini-metrics">
+                    <div class="metric-box">
+                        <span class="label">Total Transaksi</span>
+                        <strong id="expense-month-transactions">0</strong>
+                    </div>
+                    <div class="metric-box alert">
+                        <span class="label">Pengeluaran Terfilter</span>
+                        <strong id="expense-month-total">Rp0</strong>
+                    </div>
+                </div>
+
+                <div class="table-container custom-scrollbar">
+                    <table id="expense-table" class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Kegiatan</th>
+                                <th>Keterangan</th>
+                                <th>Nominal</th>
+                                <th class="col-aksi">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expense-table-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="summary-section mt-6">
+                    <h3 class="text-sm font-semibold text-muted mb-3 uppercase tracking-wider">Rekapitulasi Bulanan</h3>
+                    <ul id="monthly-summary-list" class="summary-cards"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
